@@ -1,34 +1,35 @@
 pipeline {
-    agent any 
-    
-    stages{
-        stage("Clone Code"){
+    agent any
+
+    stages {
+        stage('Clone') {
             steps {
-                echo "Cloning the code"
-                git url:"https://github.com/LondheShubham153/django-notes-app.git", branch: "main"
+                echo 'Clone the code from Github'
+                git url: 'https://github.com/priya241302/django-notes-app.git',branch:'main'
             }
         }
-        stage("Build"){
+        
+         stage('Build') {
             steps {
-                echo "Building the image"
-                sh "docker build -t my-note-app ."
+                echo 'Build code'
+                sh 'docker build -t my-note-app .'
             }
         }
-        stage("Push to Docker Hub"){
+         stage('Push') {
             steps {
-                echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/my-note-app:latest"
+                echo 'Push the code to dockerhub'
+                withCredentials([usernamePassword(credentialsId:'dockerHub',passwordVariable:'PASS',usernameVariable:'USER')]){
+                sh '''docker tag my-note-app ${USER}/my-note-app:latest '''
+                sh '''docker login -u ${USER} -p ${PASS}'''
+                sh '''docker push ${USER}/my-note-app:latest'''
+                
                 }
             }
         }
-        stage("Deploy"){
+         stage('Deploy') {
             steps {
-                echo "Deploying the container"
-                sh "docker-compose down && docker-compose up -d"
-                
+                echo 'deploy the code'
+                sh 'docker-compose down && docker-compose up -d'
             }
         }
     }
