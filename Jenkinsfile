@@ -18,7 +18,7 @@ pipeline {
          stage('Push') {
             steps {
                 echo 'Push the code to dockerhub'
-                withCredentials([usernamePassword(credentialsId:'dockerHub',passwordVariable:'PASS',usernameVariable:'USER')]){
+                withCredentials([usernamePassword(credentialsId:'dockerhub',passwordVariable:'PASS',usernameVariable:'USER')]){
                 sh '''docker tag my-note-app ${USER}/my-note-app:latest '''
                 sh '''docker login -u ${USER} -p ${PASS}'''
                 sh '''docker push ${USER}/my-note-app:latest'''
